@@ -23,7 +23,7 @@ const store = createStore([
 // now all dispatched events will be send to server with address ws://localhost:8080
 ```
 
-![Example of use the undo/redo functionality](example.gif)
+![Example of using websocket events functionality](example.gif)
 
 ## Installation
 
