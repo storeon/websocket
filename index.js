@@ -20,9 +20,11 @@ var ws = function (url) {
       isOpen = false
     })
     connection.addEventListener('message', function (event) {
-      var recive = JSON.parse(event.data)
-      ignoreNext = true
-      store.dispatch(recive.event, recive.value)
+      try {
+        var recive = JSON.parse(event.data)
+        ignoreNext = true
+        store.dispatch(recive.event, recive.value)
+      } catch (e) {}
     })
 
     store.on('@dispatch', function (_, data) {

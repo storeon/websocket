@@ -106,3 +106,17 @@ it('should not change the state if server sends not exist event', async () => {
   })
   server.close()
 })
+
+it('should do nothing if server send non valid json string', async () => {
+  let server = new WS.WS(fakeURL)
+  store = createStore([
+    counter,
+    websocket(fakeURL)
+  ])
+  await server.connected
+  server.send('test string')
+  expect(store.get()).toEqual({
+    a: 0, b: 0
+  })
+  server.close()
+})
