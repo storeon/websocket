@@ -1,0 +1,41 @@
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Storeon demo</title>
+    <style>
+      main {
+        font-family: sans-serif;
+        text-align: center;
+      }
+      .buttons {
+        padding-bottom: 10px;
+      }
+      button + button {
+        margin-left: 10px;
+      }
+      button.action {
+        border: 1px solid gray;
+        width: 200px;
+        height: 80px;
+        box-shadow: 5px 5px 10px gray;
+      }
+      button.action:active {
+        box-shadow: 1px 1px 5px gray;
+      }
+      .tracker {
+        padding: 15px;
+        margin-bottom: 5px;
+      }
+      .container {
+        width: 300px;
+        margin: auto;
+        display: grid;
+        grid-template-columns: auto;
+      }
+    </style>
+  </head>
+  <body>
+    <main></main>
+    <script defer src="./index.js"></script>
+  </body>
+</html>
