@@ -8,10 +8,10 @@
   "scripts": {
     "lint": "eslint *.js test/*.js test/demo/*.js",
     "size": "size-limit",
-    "jest": "NODE_ENV=development jest --coverage",
+    "jest": "NODE_ENV=development jest --coverage test/*.js",
     "spell": "yarn docs && yaspeller *.md",
     "docs": "documentation build *.js -f md -o api.md",
-    "test": "yarn jest --watch && yarn lint && size-limit && yarn spell",
+    "test": "yarn jest && yarn lint && size-limit && yarn spell",
     "start": "concurrently \"parcel serve --cache-dir test/demo/.cache -d test/demo/dist test/demo/index.html --open\" \"node test/demo/ws_server.js\""
   },
   "devDependencies": {
@@ -49,7 +49,7 @@
   "size-limit": [
     {
       "path": "index.js",
-      "limit": "275 B"
+      "limit": "411 B"
     }
   ],
   "eslintConfig": {
@@ -85,7 +85,12 @@
     "ignoreCapitalization": true,
     "dictionary": [
       "storeon",
-      "eslint"
+      "eslint",
+      "WebSocket",
+      "websocket",
+      "redux",
+      "Versioning",
+      "ws"
     ]
   }
 }

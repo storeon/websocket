@@ -120,3 +120,64 @@ it('should do nothing if server send non valid json string', async () => {
   })
   server.close()
 })
+
+it('should send ping and get back pong', async () => {
+  jest.useFakeTimers()
+  let server = new WS.WS(fakeURL)
+  let send = jest.spyOn(WebSocket.prototype, 'send')
+  let listeners = { }
+  jest.spyOn(WebSocket.prototype, 'addEventListener')
+    .mockImplementation((type, callback) => {
+      listeners[type] = callback
+    })
+  store = createStore([
+    counter,
+    websocket(fakeURL)
+  ])
+  listeners.open()
+  jest.runOnlyPendingTimers()
+  expect(send).toHaveBeenCalledWith('ping')
+  listeners.message({ data: 'pong' })
+  jest.runOnlyPendingTimers()
+  expect(send).toHaveBeenCalledWith('ping')
+  listeners.close()
+  server.close()
+})
+
+it('should reconnect if not reciving pong', async () => {
+  jest.useFakeTimers()
+  let mock = jest.spyOn(global, 'WebSocket').mockImplementation(() => {
+    return {
+      addEventListener: jest.fn(),
+      send: jest.fn()
+    }
+  })
+  store = createStore([
+    counter,
+    websocket(fakeURL)
+  ])
+  expect(mock).toHaveBeenCalledTimes(1)
+  jest.advanceTimersByTime(2000)
+  expect(mock).toHaveBeenCalledTimes(2)
+})
+
+it('should reconnect if server send error', async () => {
+  jest.useFakeTimers()
+  jest.clearAllMocks()
+  let listeners = { }
+  let mock = jest.spyOn(global, 'WebSocket').mockImplementation(() => {
+    return {
+      addEventListener: (type, callback) => (listeners[type] = callback),
+      send: jest.fn()
+    }
+  })
+  store = createStore([
+    counter,
+    websocket(fakeURL)
+  ])
+  expect(mock).toHaveBeenCalledTimes(1)
+  jest.advanceTimersByTime(500)
+  listeners.error()
+  jest.advanceTimersByTime(500)
+  expect(mock).toHaveBeenCalledTimes(2)
+})

@@ -3,7 +3,7 @@
 <img src="https://storeon.github.io/storeon/logo.svg" align="right"
      alt="Storeon logo by Anton Lovchikov" width="160" height="142">
 
-Tiny module for [Storeon] which is adding functionality to work with WebSocket. This means that now you can send and recive events by WebSocket.
+Tiny module for [Storeon] which is adding functionality to work with WebSocket. This means that now you can send and receive events by WebSocket.
 
 It is just 275 bytes module (it uses [Size Limit] to control the size) without any dependencies.
 
@@ -36,7 +36,7 @@ npm install @storeon/websocket
 This module has two core functionality:
 
 - sending all events to server
-- reciving and dispatching events from server
+- receiving and dispatching events from server
 
 ## LICENSE
 

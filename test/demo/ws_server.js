@@ -18,6 +18,11 @@ wss.on('connection', ws => {
     console.log(chalk.yellowBright('Message: '))
     console.log(chalk.green(data))
     console.log(chalk.yellowBright('from client with id:'), chalk.green(id))
+    if (data === 'ping') {
+      ws.send('pong')
+      return
+    }
+    // ws.close() // uncomment this line to test recconection
     wss.clients.forEach(client => {
       if (client.readyState === WebSocket.OPEN && client.id !== id) {
         console.log(
