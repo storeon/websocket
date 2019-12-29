@@ -90,7 +90,9 @@
       "websocket",
       "redux",
       "Versioning",
-      "ws"
+      "ws",
+      "pingPongInterval",
+      "reconnectInterval"
     ]
   }
 }

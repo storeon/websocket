@@ -5,7 +5,7 @@
 
 Tiny module for [Storeon] which is adding functionality to work with WebSocket. This means that now you can send and receive events by WebSocket.
 
-It is just 275 bytes module (it uses [Size Limit] to control the size) without any dependencies.
+It is just 411 bytes module (it uses [Size Limit] to control the size) without any dependencies.
 
 [Storeon]: https://github.com/storeon/storeon
 [Size Limit]: https://github.com/ai/size-limit
@@ -37,6 +37,25 @@ This module has two core functionality:
 
 - sending all events to server
 - receiving and dispatching events from server
+
+### websocket(url, reconnectInterval, pingPongInterval)
+
+First parameter is address of WebSocket server:
+```
+type url = String
+```
+
+Second parameter is after how many millisecond try reconnect again if connection is lost (default 500):
+```
+type reconnectInterval = Number
+```
+
+Third parameter is how often in millisecond module should check if connection is alive (default 2000):
+```
+type pingPongInterval = Number
+```
+
+Only `url` is not optional parameter.
 
 ## LICENSE
 
