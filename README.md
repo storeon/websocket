@@ -29,6 +29,8 @@ const store = createStore([
 
 ```
 npm install @storeon/websocket
+# or
+yarn add @storeon/websocket
 ```
 
 ## Usage
@@ -38,21 +40,30 @@ This module has two core functionality:
 - sending all events to server
 - receiving and dispatching events from server
 
-### websocket(url, reconnectInterval, pingPongInterval)
+### websocket(url, include, reconnectInterval, pingPongInterval)
 
 First parameter is address of WebSocket server:
 ```
 type url = String
 ```
 
-Second parameter is after how many millisecond try reconnect again if connection is lost (default 500):
+Second parameter is white list of events. 
+All events added to this array will be dispatched/sent.
+
 ```
-type reconnectInterval = Number
+type include = Void | Array<String>
 ```
 
-Third parameter is how often in millisecond module should check if connection is alive (default 2000):
+If no pass the `include` then all events will be dispatched/sent.
+
+Third parameter is after how many millisecond try reconnect again if connection is lost (default 500):
 ```
-type pingPongInterval = Number
+type reconnectInterval = Void | Number
+```
+
+Fourth parameter is how often in millisecond module should check if connection is alive (default 2000):
+```
+type pingPongInterval = Void | Number
 ```
 
 Only `url` is not optional parameter.

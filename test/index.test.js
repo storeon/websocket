@@ -3,8 +3,6 @@ let createStore = require('storeon')
 
 let websocket = require('../')
 
-global.WebSocket = WebSocket
-
 let store
 let counter
 let fakeURL = 'ws://localhost:8080'
@@ -15,10 +13,16 @@ beforeEach(() => {
       return { a: 0, b: 0 }
     })
 
-    s.on('counter/add', state => {
+    s.on('counter/inc', state => {
       return {
         a: state.a + 1,
         b: state.b + 1
+      }
+    })
+    s.on('counter/dec', state => {
+      return {
+        a: state.a - 1,
+        b: state.b - 1
       }
     })
   }
@@ -38,8 +42,8 @@ it('should send event to server', async () => {
     websocket(fakeURL)
   ])
   await server.connected
-  store.dispatch('counter/add')
-  await expect(server).toReceiveMessage('{"event":"counter/add"}')
+  store.dispatch('counter/inc')
+  await expect(server).toReceiveMessage('{"event":"counter/inc"}')
   server.close()
 })
 
@@ -51,11 +55,11 @@ it('should not sending events if server get the error', async () => {
   ])
   await server.connected
 
-  store.dispatch('counter/add')
-  await expect(server).toReceiveMessage('{"event":"counter/add"}')
+  store.dispatch('counter/inc')
+  await expect(server).toReceiveMessage('{"event":"counter/inc"}')
 
   server.error()
-  store.dispatch('counter/add')
+  store.dispatch('counter/inc')
   expect(store.get()).toEqual({
     a: 2, b: 2
   })
@@ -69,11 +73,11 @@ it('should not sending events if server closes connection', async () => {
   ])
   await server.connected
 
-  store.dispatch('counter/add')
-  await expect(server).toReceiveMessage('{"event":"counter/add"}')
+  store.dispatch('counter/inc')
+  await expect(server).toReceiveMessage('{"event":"counter/inc"}')
 
   server.close()
-  store.dispatch('counter/add')
+  store.dispatch('counter/inc')
   expect(store.get()).toEqual({
     a: 2, b: 2
   })
@@ -86,7 +90,7 @@ it('should getting event from server', async () => {
     websocket(fakeURL)
   ])
   await server.connected
-  server.send('{"event":"counter/add"}')
+  server.send('{"event":"counter/inc"}')
   expect(store.get()).toEqual({
     a: 1, b: 1
   })
@@ -118,6 +122,70 @@ it('should do nothing if server send non valid json string', async () => {
   expect(store.get()).toEqual({
     a: 0, b: 0
   })
+  server.close()
+})
+
+it('should send send events only if added to include param', async () => {
+  let server = new WS.WS(fakeURL)
+  let include = ['counter/dec']
+  store = createStore([
+    counter,
+    websocket(fakeURL, include)
+  ])
+  await server.connected
+
+  store.dispatch('counter/inc')
+  store.dispatch('counter/dec')
+  await expect(server).not.toReceiveMessage('{"event":"counter/inc"}')
+
+  server.close()
+})
+
+it('should dispatched events only if added to include param', async () => {
+  let server = new WS.WS(fakeURL)
+  let include = ['counter/inc']
+  store = createStore([
+    counter,
+    websocket(fakeURL, include)
+  ])
+  await server.connected
+
+  server.send('{"event":"counter/inc"}')
+  server.send('{"event":"counter/dec"}')
+  expect(store.get()).toEqual({
+    a: 1, b: 1
+  })
+  server.close()
+})
+
+it('should dispatch all received events if include is empty', async () => {
+  let server = new WS.WS(fakeURL)
+  store = createStore([
+    counter,
+    websocket(fakeURL)
+  ])
+  await server.connected
+
+  server.send('{"event":"counter/inc"}')
+  server.send('{"event":"counter/dec"}')
+  expect(store.get()).toEqual({
+    a: 0, b: 0
+  })
+  server.close()
+})
+
+it('should send all received events if include is empty', async () => {
+  let server = new WS.WS(fakeURL)
+  store = createStore([
+    counter,
+    websocket(fakeURL)
+  ])
+  await server.connected
+
+  store.dispatch('counter/inc')
+  store.dispatch('counter/dec')
+  await expect(server).toReceiveMessage('{"event":"counter/inc"}')
+  await expect(server).toReceiveMessage('{"event":"counter/dec"}')
   server.close()
 })
 

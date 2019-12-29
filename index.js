@@ -1,10 +1,13 @@
 /**
  *  Storeon module to send and receive events by WebSocket
  *  @param {String} url The url of WebSocket server
+ *  @param {String[]} include The array that descibed what event
+ *      should be sent/dispatched
  *  @param {Number} reconnectInterval Interval after trying to reconnect
  *  @param {Number} pingPongInterval Interval to send 'ping' to server
  **/
-var ws = function (url, reconnectInterval, pingPongInterval) {
+var ws = function (url, include, reconnectInterval, pingPongInterval) {
+  include = include || []
   reconnectInterval = reconnectInterval || 500
   pingPongInterval = pingPongInterval || 2000
   if (!url) {
@@ -39,11 +42,14 @@ var ws = function (url, reconnectInterval, pingPongInterval) {
     function message (event) {
       if (event.data === 'pong') {
         pingPongAttempt = false
+        return
       }
       try {
-        var recive = JSON.parse(event.data)
+        var receive = JSON.parse(event.data)
         ignoreNext = true
-        store.dispatch(recive.event, recive.value)
+        if (include.length !== 0 &&
+          include.indexOf(receive.event) === -1) return
+        store.dispatch(receive.event, receive.value)
       } catch (e) {}
     }
 
@@ -77,13 +83,14 @@ var ws = function (url, reconnectInterval, pingPongInterval) {
         return
       }
 
-      if (connection.readyState === WebSocket.OPEN) {
-        var toSend = {
-          event: data[0],
-          value: data[1]
-        }
-        connection.send(JSON.stringify(toSend))
+      if (connection.readyState !== WebSocket.OPEN ||
+        (include.length !== 0 && include.indexOf(data[0]) === -1)) return
+
+      var toSend = {
+        event: data[0],
+        value: data[1]
       }
+      connection.send(JSON.stringify(toSend))
     })
   }
 }
