@@ -68,6 +68,20 @@ type pingPongInterval = Void | Number
 
 Only `url` is not optional parameter.
 
+### Server
+
+The module is sending event like a string. So before sending it stringify all events.
+
+After receiving message from server the module trying to parse this string to json with `JSON.parse`.
+If received message is valid json then module dispatching it in `storeon`.
+
+Each 2000 ms module send `ping` message to server and if server in 2000 ms doesn't send back message `pong`
+then module trying to reconnect to server.
+
+If server close connection or send error then module trying to reconnect to server.
+
+Example implementation of echo server please see in [example](./test/demo/ws_server.js).
+
 ## LICENSE
 
 MIT

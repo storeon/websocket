@@ -1,6 +1,6 @@
 {
   "name": "@storeon/websocket",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Module for storeon which allows sending and reciving events by WebSocket",
   "repository": "storeon/websocket",
   "author": "Ivan Menshykov <ivan.menshykov@gmail.com>",
@@ -92,7 +92,8 @@
       "Versioning",
       "ws",
       "pingPongInterval",
-      "reconnectInterval"
+      "reconnectInterval",
+      "stringify"
     ]
   }
 }
