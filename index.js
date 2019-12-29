@@ -19,11 +19,11 @@ var ws = function (url, include, reconnectInterval, pingPongInterval) {
   return function (store) {
     var connection
     var isOpen = false
-    var ignoreNext = false
     var reconnectTimer
     var pingPongTimer
     var pingPongAttempt = false
     var reconnectAttempt = false
+    var receivedEvent = Symbol('event_from_ws')
     function reconnect () {
       if (reconnectAttempt) return
       clearTimeout(reconnectTimer)
@@ -46,9 +46,10 @@ var ws = function (url, include, reconnectInterval, pingPongInterval) {
       }
       try {
         var receive = JSON.parse(event.data)
-        ignoreNext = true
+        receive.value = receive.value || {}
         if (include.length !== 0 &&
           include.indexOf(receive.event) === -1) return
+        receive.value[receivedEvent] = true
         store.dispatch(receive.event, receive.value)
       } catch (e) {}
     }
@@ -77,11 +78,7 @@ var ws = function (url, include, reconnectInterval, pingPongInterval) {
 
     store.on('@dispatch', function (_, data) {
       if (data[0] === '@changed' || !isOpen) return
-
-      if (ignoreNext) {
-        ignoreNext = false
-        return
-      }
+      if (data[1] && data[1][receivedEvent]) return
 
       if (connection.readyState !== WebSocket.OPEN ||
         (include.length !== 0 && include.indexOf(data[0]) === -1)) return
