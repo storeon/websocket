@@ -1,7 +1,7 @@
 /**
  *  Storeon module to send and receive events by WebSocket
  *  @param {String} url The url of WebSocket server
- *  @param {String[]} include The array that descibed what event
+ *  @param {String[]} include The array that described what event
  *      should be sent/dispatched
  *  @param {Number} reconnectInterval Interval after trying to reconnect
  *  @param {Number} pingPongInterval Interval to send 'ping' to server
@@ -10,10 +10,12 @@ var ws = function (url, include, reconnectInterval, pingPongInterval) {
   include = include || []
   reconnectInterval = reconnectInterval || 500
   pingPongInterval = pingPongInterval || 2000
-  if (!url) {
-    throw new Error(
-      'The url parameter should be a string. ' +
-      'For example: "ws://localhost:8080"')
+  if (process.env.NODE_ENV === 'development') {
+    if (!url) {
+      throw new Error(
+        'The url parameter should be a string. ' +
+        'For example: "ws://localhost:8080"')
+    }
   }
 
   return function (store) {
@@ -23,7 +25,7 @@ var ws = function (url, include, reconnectInterval, pingPongInterval) {
     var pingPongTimer
     var pingPongAttempt = false
     var reconnectAttempt = false
-    var receivedEvent = Symbol('event_from_ws')
+    var receivedEvent = Symbol('ws')
     function reconnect () {
       if (reconnectAttempt) return
       clearTimeout(reconnectTimer)
@@ -57,11 +59,10 @@ var ws = function (url, include, reconnectInterval, pingPongInterval) {
     function pingPong () {
       if (!pingPongAttempt) {
         connection.send('ping')
-        pingPongAttempt = true
       } else {
-        pingPongAttempt = false
         start()
       }
+      pingPongAttempt = !pingPongAttempt
     }
 
     function start () {
@@ -83,11 +84,10 @@ var ws = function (url, include, reconnectInterval, pingPongInterval) {
       if (connection.readyState !== WebSocket.OPEN ||
         (include.length !== 0 && include.indexOf(data[0]) === -1)) return
 
-      var toSend = {
+      connection.send(JSON.stringify({
         event: data[0],
         value: data[1]
-      }
-      connection.send(JSON.stringify(toSend))
+      }))
     })
   }
 }
