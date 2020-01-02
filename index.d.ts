@@ -8,11 +8,11 @@ import createStore from 'storeon'
  *  @param {Number} reconnectInterval Interval after trying to reconnect
  *  @param {Number} pingPongInterval Interval to send 'ping' to server
  **/
-declare module StoreonWebsocket {
-    export function websocket<State>(
-        url: string,
-        include?: String[],
-        reconnectInterval?: Number,
-        pingPongInterval?: Number
-    ): createStore.Module<State>
-}
+function websocket<State>(
+    url: string,
+    include?: String[],
+    reconnectInterval?: Number,
+    pingPongInterval?: Number
+): createStore.Module<State>
+
+export = websocket;
