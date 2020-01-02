@@ -1,6 +1,11 @@
 # Change Log
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 0.2.0
+
+* Reduce site
+* Add types for TypeScript
+
 ## 0.1.1
 
 * Add info about server to README
