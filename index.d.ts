@@ -1,18 +1,23 @@
 import createStore from 'storeon'
 
 /**
- *  Storeon module to send and receive events by WebSocket
- *  @param {String} url The url of WebSocket server
- *  @param {String[]} include The array that described what event
- *      should be sent/dispatched
- *  @param {Number} reconnectInterval Interval after trying to reconnect
- *  @param {Number} pingPongInterval Interval to send 'ping' to server
+ *  Storeon is a module to sync events through WebSocket
+ *  @param {String} url Address of WebSocket server
+ *  @param {Object} [options] Module configuration
+ *  @param {String[]} [options.include] List of events to sync
+ *  @param {String[]} [options.exclude] List of events to ignore
+ *  @param {Number} [options.reconnectInterval] Time (ms) to reconnect
+ *  @param {Number} [options.pingPongInterval] Interval (ms) to ping server
  **/
+
 function websocket<State>(
     url: string,
-    include?: String[],
-    reconnectInterval?: Number,
-    pingPongInterval?: Number
+    options?: {
+        include?: String[],
+        exclude?: String[],
+        reconnectInterval?: Number,
+        pingPongInterval?: Number
+    }
 ): createStore.Module<State>
 
 export = websocket;

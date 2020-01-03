@@ -1,15 +1,19 @@
 /**
- *  Storeon module to send and receive events by WebSocket
- *  @param {String} url The url of WebSocket server
- *  @param {String[]} include The array that described what event
- *      should be sent/dispatched
- *  @param {Number} reconnectInterval Interval after trying to reconnect
- *  @param {Number} pingPongInterval Interval to send 'ping' to server
+ *  Storeon is a module to sync events through WebSocket
+ *  @param {String} url Address of WebSocket server
+ *  @param {Object} [options] Module configuration
+ *  @param {String[]} [options.include] List of events to sync
+ *  @param {String[]} [options.exclude] List of events to ignore
+ *  @param {Number} [options.reconnectInterval] Time (ms) to reconnect
+ *  @param {Number} [options.pingPongInterval] Interval (ms) to ping server
  **/
-var ws = function (url, include, reconnectInterval, pingPongInterval) {
-  include = include || []
-  reconnectInterval = reconnectInterval || 500
-  pingPongInterval = pingPongInterval || 2000
+var ws = function (url, options) {
+  options = options || {}
+  var include = options.include
+  var exclude = options.exclude
+  var reconnectInterval = options.reconnectInterval || 500
+  var pingPongInterval = options.pingPongInterval || 2000
+
   if (process.env.NODE_ENV === 'development') {
     if (!url) {
       throw new Error(
@@ -20,12 +24,11 @@ var ws = function (url, include, reconnectInterval, pingPongInterval) {
 
   return function (store) {
     var connection
-    var isOpen = false
     var reconnectTimer
     var pingPongTimer
     var pingPongAttempt = false
     var reconnectAttempt = false
-    var receivedEvent = Symbol('ws')
+    var fromWS = Symbol('ws')
     function reconnect () {
       if (reconnectAttempt) return
       clearTimeout(reconnectTimer)
@@ -34,11 +37,7 @@ var ws = function (url, include, reconnectInterval, pingPongInterval) {
         start()
       }, reconnectInterval)
     }
-    function open () {
-      isOpen = true
-    }
     function close () {
-      isOpen = false
       reconnect()
     }
     function message (event) {
@@ -49,9 +48,9 @@ var ws = function (url, include, reconnectInterval, pingPongInterval) {
       try {
         var receive = JSON.parse(event.data)
         receive.value = receive.value || {}
-        if (include.length !== 0 &&
-          include.indexOf(receive.event) === -1) return
-        receive.value[receivedEvent] = true
+        if (include && include.indexOf(receive.event) === -1) return
+        if (exclude && exclude.indexOf(receive.event) !== -1) return
+        receive.value[fromWS] = true
         store.dispatch(receive.event, receive.value)
       } catch (e) {}
     }
@@ -69,7 +68,6 @@ var ws = function (url, include, reconnectInterval, pingPongInterval) {
       clearInterval(pingPongTimer)
       clearTimeout(reconnectTimer)
       connection = new WebSocket(url)
-      connection.addEventListener('open', open)
       connection.addEventListener('close', close)
       connection.addEventListener('error', close)
       connection.addEventListener('message', message)
@@ -78,11 +76,13 @@ var ws = function (url, include, reconnectInterval, pingPongInterval) {
     start()
 
     store.on('@dispatch', function (_, data) {
-      if (data[0] === '@changed' || !isOpen) return
-      if (data[1] && data[1][receivedEvent]) return
-
-      if (connection.readyState !== WebSocket.OPEN ||
-        (include.length !== 0 && include.indexOf(data[0]) === -1)) return
+      if (
+        (data[0] && data[0][0] === '@') ||
+        (data[1] && data[1][fromWS]) ||
+        (connection.readyState !== WebSocket.OPEN) ||
+        (include && include.indexOf(data[0]) === -1) ||
+        (exclude && exclude.indexOf(data[0]) !== -1)
+      ) return
 
       connection.send(JSON.stringify({
         event: data[0],
