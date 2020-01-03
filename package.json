@@ -1,7 +1,7 @@
 {
   "name": "@storeon/websocket",
   "version": "0.2.1",
-  "description": "Module for storeon which allows sending and reciving events by WebSocket",
+  "description": "Module for storeon to sync events through WebSocket",
   "repository": "storeon/websocket",
   "author": "Ivan Menshykov <ivan.menshykov@gmail.com>",
   "license": "MIT",
@@ -49,7 +49,7 @@
   "size-limit": [
     {
       "path": "index.js",
-      "limit": "389 B"
+      "limit": "400 B"
     }
   ],
   "eslintConfig": {

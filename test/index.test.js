@@ -125,12 +125,12 @@ it('should do nothing if server send non valid json string', async () => {
   server.close()
 })
 
-it('should send send events only if added to include param', async () => {
+it('should skip events not listed in include', async () => {
   let server = new WS.WS(fakeURL)
   let include = ['counter/dec']
   store = createStore([
     counter,
-    websocket(fakeURL, include)
+    websocket(fakeURL, { include })
   ])
   await server.connected
 
@@ -141,12 +141,45 @@ it('should send send events only if added to include param', async () => {
   server.close()
 })
 
-it('should dispatched events only if added to include param', async () => {
+it('should dispatch events only if listed in include', async () => {
   let server = new WS.WS(fakeURL)
   let include = ['counter/inc']
   store = createStore([
     counter,
-    websocket(fakeURL, include)
+    websocket(fakeURL, { include })
+  ])
+  await server.connected
+
+  server.send('{"event":"counter/inc"}')
+  server.send('{"event":"counter/dec"}')
+  expect(store.get()).toEqual({
+    a: 1, b: 1
+  })
+  server.close()
+})
+
+it('should skip events if listed in exclude', async () => {
+  let server = new WS.WS(fakeURL)
+  let exclude = ['counter/inc']
+  store = createStore([
+    counter,
+    websocket(fakeURL, { exclude })
+  ])
+  await server.connected
+
+  store.dispatch('counter/inc')
+  store.dispatch('counter/dec')
+  await expect(server).not.toReceiveMessage('{"event":"counter/inc"}')
+
+  server.close()
+})
+
+it('should dispatch events only if not listed in exclude', async () => {
+  let server = new WS.WS(fakeURL)
+  let exclude = ['counter/dec']
+  store = createStore([
+    counter,
+    websocket(fakeURL, { exclude })
   ])
   await server.connected
 
@@ -202,7 +235,6 @@ it('should send ping and get back pong', async () => {
     counter,
     websocket(fakeURL)
   ])
-  listeners.open()
   jest.runOnlyPendingTimers()
   expect(send).toHaveBeenCalledWith('ping')
   listeners.message({ data: 'pong' })
@@ -212,7 +244,7 @@ it('should send ping and get back pong', async () => {
   server.close()
 })
 
-it('should reconnect if not reciving pong', async () => {
+it('should reconnect if not receiving pong', async () => {
   jest.useFakeTimers()
   let mock = jest.spyOn(global, 'WebSocket').mockImplementation(() => {
     return {
