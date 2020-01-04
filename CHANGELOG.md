@@ -1,6 +1,10 @@
 # Change Log
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 0.3.0
+
+* Add new options exclude. Refactor into separate param. (by Pavel Prokudin https://github.com/paul-pro)
+
 ## 0.2.1
 
 * Fix exporting types (by Pavel Prokudin https://github.com/paul-pro)
