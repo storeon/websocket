@@ -37,9 +37,6 @@ var ws = function (url, options) {
         start()
       }, reconnectInterval)
     }
-    function close () {
-      reconnect()
-    }
     function message (event) {
       if (event.data === 'pong') {
         pingPongAttempt = false
@@ -68,8 +65,8 @@ var ws = function (url, options) {
       clearInterval(pingPongTimer)
       clearTimeout(reconnectTimer)
       connection = new WebSocket(url)
-      connection.addEventListener('close', close)
-      connection.addEventListener('error', close)
+      connection.addEventListener('close', reconnect)
+      connection.addEventListener('error', reconnect)
       connection.addEventListener('message', message)
       pingPongTimer = setInterval(pingPong, pingPongInterval)
     }
