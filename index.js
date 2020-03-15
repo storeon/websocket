@@ -7,12 +7,12 @@
  *  @param {Number} [options.reconnectInterval] Time (ms) to reconnect
  *  @param {Number} [options.pingPongInterval] Interval (ms) to ping server
  **/
-var ws = function (url, options) {
+let ws = function (url, options) {
   options = options || {}
-  var include = options.include
-  var exclude = options.exclude
-  var reconnectInterval = options.reconnectInterval || 500
-  var pingPongInterval = options.pingPongInterval || 2000
+  let include = options.include
+  let exclude = options.exclude
+  let reconnectInterval = options.reconnectInterval || 500
+  let pingPongInterval = options.pingPongInterval || 2000
 
   if (process.env.NODE_ENV === 'development') {
     if (!url) {
@@ -23,17 +23,17 @@ var ws = function (url, options) {
   }
 
   return function (store) {
-    var connection
-    var reconnectTimer
-    var pingPongTimer
-    var pingPongAttempt = false
-    var reconnectAttempt = false
-    var fromWS = Symbol('ws')
+    let connection
+    let reconnectTimer
+    let pingPongTimer
+    let pingPongAttempt = false
+    let reconnectAttempt = false
+    let fromWS = Symbol('ws')
     function reconnect () {
       if (reconnectAttempt) return
       clearTimeout(reconnectTimer)
       reconnectAttempt = true
-      reconnectTimer = setTimeout(function () {
+      reconnectTimer = setTimeout(() => {
         start()
       }, reconnectInterval)
     }
@@ -43,10 +43,10 @@ var ws = function (url, options) {
         return
       }
       try {
-        var receive = JSON.parse(event.data)
+        let receive = JSON.parse(event.data)
         receive.value = receive.value || {}
-        if (include && include.indexOf(receive.event) === -1) return
-        if (exclude && exclude.indexOf(receive.event) !== -1) return
+        if (include && !include.includes(receive.event)) return
+        if (exclude && exclude.includes(receive.event)) return
         receive.value[fromWS] = true
         store.dispatch(receive.event, receive.value)
       } catch (e) {}
@@ -72,13 +72,13 @@ var ws = function (url, options) {
     }
     start()
 
-    store.on('@dispatch', function (_, data) {
+    store.on('@dispatch', (_, data) => {
       if (
         (data[0] && data[0][0] === '@') ||
         (data[1] && data[1][fromWS]) ||
         (connection.readyState !== WebSocket.OPEN) ||
-        (include && include.indexOf(data[0]) === -1) ||
-        (exclude && exclude.indexOf(data[0]) !== -1)
+        (include && !include.includes(data[0])) ||
+        (exclude && exclude.includes(data[0]))
       ) return
 
       connection.send(JSON.stringify({

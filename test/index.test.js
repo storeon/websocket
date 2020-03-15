@@ -1,5 +1,5 @@
 let WS = require('jest-websocket-mock')
-let createStore = require('storeon')
+let { createStoreon } = require('storeon')
 
 let websocket = require('../')
 
@@ -30,14 +30,14 @@ beforeEach(() => {
 
 it('should throw the error', () => {
   expect(() => {
-    createStore(websocket())
+    createStoreon(websocket())
   }).toThrow('The url parameter should be a string. ' +
         'For example: "ws://localhost:8080"')
 })
 
 it('should send event to server', async () => {
   let server = new WS.WS(fakeURL)
-  store = createStore([
+  store = createStoreon([
     counter,
     websocket(fakeURL)
   ])
@@ -49,7 +49,7 @@ it('should send event to server', async () => {
 
 it('should not sending events if server get the error', async () => {
   let server = new WS.WS(fakeURL)
-  store = createStore([
+  store = createStoreon([
     counter,
     websocket(fakeURL)
   ])
@@ -67,7 +67,7 @@ it('should not sending events if server get the error', async () => {
 
 it('should not sending events if server closes connection', async () => {
   let server = new WS.WS(fakeURL)
-  store = createStore([
+  store = createStoreon([
     counter,
     websocket(fakeURL)
   ])
@@ -85,7 +85,7 @@ it('should not sending events if server closes connection', async () => {
 
 it('should getting event from server', async () => {
   let server = new WS.WS(fakeURL)
-  store = createStore([
+  store = createStoreon([
     counter,
     websocket(fakeURL)
   ])
@@ -99,7 +99,7 @@ it('should getting event from server', async () => {
 
 it('should not change the state if server sends not exist event', async () => {
   let server = new WS.WS(fakeURL)
-  store = createStore([
+  store = createStoreon([
     counter,
     websocket(fakeURL)
   ])
@@ -113,7 +113,7 @@ it('should not change the state if server sends not exist event', async () => {
 
 it('should do nothing if server send non valid json string', async () => {
   let server = new WS.WS(fakeURL)
-  store = createStore([
+  store = createStoreon([
     counter,
     websocket(fakeURL)
   ])
@@ -128,7 +128,7 @@ it('should do nothing if server send non valid json string', async () => {
 it('should skip events not listed in include', async () => {
   let server = new WS.WS(fakeURL)
   let include = ['counter/dec']
-  store = createStore([
+  store = createStoreon([
     counter,
     websocket(fakeURL, { include })
   ])
@@ -144,7 +144,7 @@ it('should skip events not listed in include', async () => {
 it('should dispatch events only if listed in include', async () => {
   let server = new WS.WS(fakeURL)
   let include = ['counter/inc']
-  store = createStore([
+  store = createStoreon([
     counter,
     websocket(fakeURL, { include })
   ])
@@ -161,7 +161,7 @@ it('should dispatch events only if listed in include', async () => {
 it('should skip events if listed in exclude', async () => {
   let server = new WS.WS(fakeURL)
   let exclude = ['counter/inc']
-  store = createStore([
+  store = createStoreon([
     counter,
     websocket(fakeURL, { exclude })
   ])
@@ -177,7 +177,7 @@ it('should skip events if listed in exclude', async () => {
 it('should dispatch events only if not listed in exclude', async () => {
   let server = new WS.WS(fakeURL)
   let exclude = ['counter/dec']
-  store = createStore([
+  store = createStoreon([
     counter,
     websocket(fakeURL, { exclude })
   ])
@@ -193,7 +193,7 @@ it('should dispatch events only if not listed in exclude', async () => {
 
 it('should dispatch all received events if include is empty', async () => {
   let server = new WS.WS(fakeURL)
-  store = createStore([
+  store = createStoreon([
     counter,
     websocket(fakeURL)
   ])
@@ -209,7 +209,7 @@ it('should dispatch all received events if include is empty', async () => {
 
 it('should send all received events if include is empty', async () => {
   let server = new WS.WS(fakeURL)
-  store = createStore([
+  store = createStoreon([
     counter,
     websocket(fakeURL)
   ])
@@ -231,7 +231,7 @@ it('should send ping and get back pong', async () => {
     .mockImplementation((type, callback) => {
       listeners[type] = callback
     })
-  store = createStore([
+  store = createStoreon([
     counter,
     websocket(fakeURL)
   ])
@@ -252,7 +252,7 @@ it('should reconnect if not receiving pong', async () => {
       send: jest.fn()
     }
   })
-  store = createStore([
+  store = createStoreon([
     counter,
     websocket(fakeURL)
   ])
@@ -271,7 +271,7 @@ it('should reconnect if server send error', async () => {
       send: jest.fn()
     }
   })
-  store = createStore([
+  store = createStoreon([
     counter,
     websocket(fakeURL)
   ])
