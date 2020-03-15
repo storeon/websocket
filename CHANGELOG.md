@@ -3,6 +3,10 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## 0.3.1
 
+* Move project to ES2015+. Update dependencies
+
+## 0.3.1
+
 * Remove unnecessary code
 
 ## 0.3.0
