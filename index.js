@@ -7,7 +7,7 @@
  *  @param {Number} [options.reconnectInterval] Time (ms) to reconnect
  *  @param {Number} [options.pingPongInterval] Interval (ms) to ping server
  **/
-let ws = function (url, options) {
+let websocket = function (url, options) {
   options = options || {}
   let include = options.include
   let exclude = options.exclude
@@ -89,4 +89,4 @@ let ws = function (url, options) {
   }
 }
 
-module.exports = ws
+module.exports = { websocket }

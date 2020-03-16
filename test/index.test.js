@@ -1,7 +1,7 @@
 let WS = require('jest-websocket-mock')
 let { createStoreon } = require('storeon')
 
-let websocket = require('../')
+let { websocket } = require('../')
 
 let store
 let counter
