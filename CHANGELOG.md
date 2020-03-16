@@ -1,7 +1,11 @@
 # Change Log
 This project adheres to [Semantic Versioning](http://semver.org/).
 
-## 0.3.1
+## 0.5.0
+
+* Add dual publish to package
+
+## 0.4.0
 
 * Move project to ES2015+. Update dependencies
 
