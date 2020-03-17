@@ -1,6 +1,6 @@
 {
   "name": "@storeon/websocket",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "description": "Module for storeon to sync events through WebSocket",
   "repository": "storeon/websocket",
   "author": "Ivan Menshykov <ivan.menshykov@gmail.com>",
