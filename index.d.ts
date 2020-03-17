@@ -1,4 +1,4 @@
-import { createStoreon } from 'storeon'
+import { StoreonModule } from 'storeon';
 
 /**
  *  Storeon is a module to sync events through WebSocket
@@ -9,8 +9,7 @@ import { createStoreon } from 'storeon'
  *  @param {Number} [options.reconnectInterval] Time (ms) to reconnect
  *  @param {Number} [options.pingPongInterval] Interval (ms) to ping server
  **/
-
-function websocket<State>(
+declare function websocket<State>(
     url: string,
     options?: {
         include?: String[],
@@ -18,6 +17,6 @@ function websocket<State>(
         reconnectInterval?: Number,
         pingPongInterval?: Number
     }
-): createStoreon.Module<State>
+): StoreonModule<State>;
 
-export = websocket;
+export = { websocket };

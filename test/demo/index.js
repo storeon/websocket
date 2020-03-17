@@ -6,7 +6,7 @@ let { StoreContext, connectStoreon } = require('storeon/react')
 let { createStoreon } = require('storeon')
 let { storeonLogger, storeonDevtools } = require('storeon/devtools')
 
-let websocket = require('../../')
+let { websocket } = require('../../')
 let url = 'ws://localhost:8080'
 
 function counter (store) {
