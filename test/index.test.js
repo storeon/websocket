@@ -28,6 +28,17 @@ beforeEach(() => {
   }
 })
 
+afterEach(() => {
+  process.env.NODE_ENV = 'development'
+})
+
+it('should throw not throw the error in not development mode', () => {
+  process.env.NODE_ENV = 'production'
+  expect(() => {
+    createStoreon(websocket())
+  }).toThrow('modules.forEach is not a function')
+})
+
 it('should throw the error', () => {
   expect(() => {
     createStoreon(websocket())
