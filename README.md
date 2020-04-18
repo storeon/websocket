@@ -75,7 +75,7 @@ The module is sending event like a string. So before sending it stringify all ev
 After receiving message from server the module trying to parse this string to json with `JSON.parse`.
 If received message is valid json then module dispatching it in `storeon`.
 
-Each 2000 ms module send `ping` message to server and if server in 2000 ms doesn't send back message `pong`
+Each 2000 ms module send `ping` message to server and if server in 2000 ms doesn’t send back message `pong`
 then module trying to reconnect to server.
 
 If server close connection or send error then module trying to reconnect to server.
