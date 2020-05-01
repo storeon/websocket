@@ -5,7 +5,7 @@
 
 Tiny module for [Storeon] which is adding functionality to work with WebSocket. This means that now you can send and receive events by WebSocket.
 
-It is just 403 bytes module (it uses [Size Limit] to control the size) without any dependencies.
+It is just 401 bytes module (it uses [Size Limit] to control the size) without any dependencies.
 
 [Storeon]: https://github.com/storeon/storeon
 [Size Limit]: https://github.com/ai/size-limit
