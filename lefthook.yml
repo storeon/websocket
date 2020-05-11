@@ -1,0 +1,15 @@
+pre-commit:
+  paraller: true
+  commands:
+    yaspeller:
+      glob: "*.md"
+      run: npx yaspeller {staged_files}
+    size:
+      glob: "*.js"
+      run: yarn size
+    jest:
+      glob: "*.js"
+      run: yarn jest
+    lint:
+      glob: "*.js"
+      run: yarn lint {staged_files}
