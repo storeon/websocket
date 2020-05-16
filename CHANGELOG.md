@@ -1,6 +1,10 @@
 # Change Log
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 0.7.0
+
+* Update dependencies and update code with new lint rules
+
 ## 0.6.0
 
 * Update dependencies
