@@ -12,7 +12,8 @@ wss.on('connection', ws => {
   let id = nanoid(5)
   ws.id = id
   console.log(
-    chalk.yellowBright('Client connected. Generate id:'), chalk.green(id)
+    chalk.yellowBright('Client connected. Generate id:'),
+    chalk.green(id)
   )
   ws.on('message', data => {
     console.log(chalk.yellowBright('Message: '))

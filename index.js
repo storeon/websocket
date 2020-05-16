@@ -18,7 +18,8 @@ let websocket = function (url, options) {
     if (!url) {
       throw new Error(
         'The url parameter should be a string. ' +
-        'For example: "ws://localhost:8080"')
+          'For example: "ws://localhost:8080"'
+      )
     }
   }
 
@@ -76,15 +77,19 @@ let websocket = function (url, options) {
       if (
         (data[0] && data[0][0] === '@') ||
         (data[1] && data[1][fromWS]) ||
-        (connection.readyState !== WebSocket.OPEN) ||
+        connection.readyState !== WebSocket.OPEN ||
         (include && !include.includes(data[0])) ||
         (exclude && exclude.includes(data[0]))
-      ) return
+      ) {
+        return
+      }
 
-      connection.send(JSON.stringify({
-        event: data[0],
-        value: data[1]
-      }))
+      connection.send(
+        JSON.stringify({
+          event: data[0],
+          value: data[1]
+        })
+      )
     })
   }
 }

@@ -45,25 +45,28 @@ let Tracker1 = connectStoreon('count1', props => {
 
 let Button1 = connectStoreon(props => {
   return h(Button, {
-    dispatch: props.dispatch, event: 'inc', text: 'Increase counter'
+    dispatch: props.dispatch,
+    event: 'inc',
+    text: 'Increase counter'
   })
 })
 
 function App () {
-  return h(Fragment, null,
+  return h(
+    Fragment,
+    null,
     h('div', null, 'All dispatched events will be sent to server'),
-    h('div', { className: 'container' },
-      h(Tracker1)
-    ),
-    h('div', { className: 'buttons' },
-      h(Button1)
-    )
+    h('div', { className: 'container' }, h(Tracker1)),
+    h('div', { className: 'buttons' }, h(Button1))
   )
 }
 
-let store = createStoreon(
-  [counter, websocket(url), storeonLogger, storeonDevtools()]
-)
+let store = createStoreon([
+  counter,
+  websocket(url),
+  storeonLogger,
+  storeonDevtools()
+])
 
 render(
   h(StoreContext.Provider, { value: store }, h(App)),
